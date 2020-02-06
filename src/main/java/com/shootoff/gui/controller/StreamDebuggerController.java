@@ -18,19 +18,18 @@
 
 package com.shootoff.gui.controller;
 
-import java.awt.image.BufferedImage;
-
 import com.shootoff.camera.CameraDebuggerListener;
 import com.shootoff.camera.CameraManager;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import com.shootoff.util.SwingFXUtils;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+
+import java.awt.image.BufferedImage;
 
 public class StreamDebuggerController implements CameraDebuggerListener {
 	private Stage streamDebuggerStage;

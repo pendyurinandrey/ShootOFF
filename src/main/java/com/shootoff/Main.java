@@ -18,27 +18,6 @@
 
 package com.shootoff;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.util.Enumeration;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.shootoff.camera.CameraFactory;
 import com.shootoff.camera.cameratypes.OptiTrackCamera;
 import com.shootoff.camera.cameratypes.PS3EyeCamera;
@@ -49,10 +28,6 @@ import com.shootoff.headless.HeadlessController;
 import com.shootoff.plugins.TextToSpeech;
 import com.shootoff.util.HardwareData;
 import com.shootoff.util.SystemInfo;
-import com.shootoff.util.VersionChecker;
-import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
-import com.sun.javafx.application.HostServicesDelegate;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -60,19 +35,27 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.util.Enumeration;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Main extends Application {
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -95,7 +78,6 @@ public class Main extends Application {
 	private File resourcesJARFile;
 	private Stage primaryStage;
 
-	private static final String VERSION_METADATA_NAME = "shootoff-version.xml";
 	private static Optional<String> version = Optional.empty();
 	private static boolean shouldShowV4lWarning = false;
 
@@ -453,91 +435,6 @@ public class Main extends Application {
 		System.exit(status);
 	}
 
-	private Optional<String> getVersionXML(final String versionAddress) {
-		HttpURLConnection connection = null;
-		InputStream stream = null;
-
-		try {
-			connection = (HttpURLConnection) new URL(versionAddress).openConnection();
-			stream = connection.getInputStream();
-		} catch (final UnknownHostException e) {
-			logger.error("Could not connect to remote host " + e.getMessage() + " to download version metadata.", e);
-			return Optional.empty();
-		} catch (final IOException e) {
-			if (connection != null) connection.disconnect();
-
-			logger.error("Error downloading version metadata", e);
-			return Optional.empty();
-		}
-
-		final StringBuilder versionXML = new StringBuilder();
-
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
-
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (versionXML.length() > 0) versionXML.append("\n");
-				versionXML.append(line);
-			}
-		} catch (final IOException e) {
-			connection.disconnect();
-
-			logger.error("Failed to read version metadata", e);
-			return Optional.empty();
-		}
-
-		connection.disconnect();
-
-		return Optional.of(versionXML.toString());
-	}
-
-	public void checkVersion() {
-		final Optional<String> versionXML = getVersionXML(SHOOTOFF_DOMAIN + VERSION_METADATA_NAME);
-
-		if (versionXML.isPresent()) {
-			final Optional<String> stableVersion = parseField(versionXML.get(), "stableRelease", "version");
-
-			if (stableVersion.isPresent() && VersionChecker.compareVersions(stableVersion.get(), version.get()) > 0) {
-				final Optional<String> downloadLink = parseField(versionXML.get(), "stableRelease", "download");
-
-				final String link;
-
-				if (downloadLink.isPresent())
-					link = downloadLink.get();
-				else
-					link = SHOOTOFF_DOMAIN;
-
-				final Alert shootoffWelcome = new Alert(AlertType.INFORMATION);
-				shootoffWelcome.setTitle("ShootOFF Updated");
-				shootoffWelcome.setHeaderText("This version of ShootOFF is outdated!");
-				shootoffWelcome.setResizable(true);
-
-				final FlowPane fp = new FlowPane();
-				final Label lbl = new Label(
-						"The current stable release of ShootOFF is " + stableVersion.get() + ", but you are running "
-								+ version.get() + ". " + "You can download the current version of ShootOFF here:\n\n");
-
-				final Hyperlink lnk = new Hyperlink(link);
-
-				lnk.setOnAction((event) -> {
-					final HostServicesDelegate hostServices = HostServicesFactory.getInstance(this);
-					hostServices.showDocument(link);
-					lnk.setVisited(true);
-				});
-
-				fp.getChildren().addAll(lbl, lnk);
-
-				shootoffWelcome.getDialogPane().contentProperty().set(fp);
-				shootoffWelcome.showAndWait();
-			} else if (stableVersion.isPresent() && stableVersion.get().compareTo(version.get()) < 0) {
-				logger.warn("Future version of ShootOFF? stableVersion = {}, this.version = {}", stableVersion.get(),
-						version.get());
-			} else {
-				logger.debug("ShootOFF is up to date");
-			}
-		}
-	}
-
 	public void runShootOFF() {
 		final String[] args = getParameters().getRaw().toArray(new String[getParameters().getRaw().size()]);
 		Configuration config;
@@ -548,8 +445,6 @@ public class Main extends Application {
 			logger.error("Error fetching ShootOFF configuration to run ShootOFF", e);
 			return;
 		}
-
-		if (version.isPresent() && !config.inDebugMode() && !isJWS) checkVersion();
 
 		// This initializes the TTS engine
 		TextToSpeech.say("");

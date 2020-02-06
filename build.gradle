@@ -19,16 +19,18 @@ buildscript {
 
 plugins {
     id 'org.ajoberstar.grgit' version '1.3.2'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-eclipse {
-    jdt {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
+sourceCompatibility = 13
+targetCompatibility = 13
+
+javafx {
+    version = '13'
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.swing']
 }
 
 def javaHome = System.properties['java.home']
@@ -213,7 +215,7 @@ task fxJar(dependsOn: build) {
     description 'Create a runnable jar for ShootOFF'
     group 'Package'
 
-    inputs.dir sourceSets.main.output.classesDir
+    inputs.dir sourceSets.main.output.classesDirs
     inputs.dir sourceSets.main.output.resourcesDir
     outputs.file archivePath
 
