@@ -128,7 +128,7 @@ dependencies {
     }
 
     //OpenCV
-    compile 'org.openpnp:opencv:2.4.+'
+    compile 'org.openpnp:opencv:3.4.2-1'
 
     // OSHI to collect HW and system state data
     compile group: 'com.github.dblock', name: 'oshi-core', version: '3.+'

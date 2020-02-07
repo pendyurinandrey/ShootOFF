@@ -18,18 +18,6 @@
 
 package com.shootoff.camera.cameratypes;
 
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
-import org.opencv.highgui.VideoCapture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.sarxos.webcam.Webcam;
 import com.shootoff.camera.CameraFactory;
 import com.shootoff.camera.CameraManager;
@@ -38,6 +26,17 @@ import com.shootoff.camera.Frame;
 import com.shootoff.camera.shotdetection.JavaShotDetector;
 import com.shootoff.camera.shotdetection.NativeShotDetector;
 import com.shootoff.camera.shotdetection.ShotDetector;
+import org.opencv.core.Mat;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SarxosCaptureCamera extends CalculatedFPSCamera {
 	private static final Logger logger = LoggerFactory.getLogger(SarxosCaptureCamera.class);
@@ -163,18 +162,18 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 
 	@Override
 	public void setViewSize(final Dimension size) {
-		camera.set(Highgui.CV_CAP_PROP_FRAME_WIDTH, size.getWidth());
-		camera.set(Highgui.CV_CAP_PROP_FRAME_HEIGHT, size.getHeight());
+		camera.set(Videoio.CV_CAP_PROP_FRAME_WIDTH, size.getWidth());
+		camera.set(Videoio.CV_CAP_PROP_FRAME_HEIGHT, size.getHeight());
 	}
 
 	@Override
 	public Dimension getViewSize() {
-		return new Dimension((int) camera.get(Highgui.CV_CAP_PROP_FRAME_WIDTH),
-				(int) camera.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT));
+		return new Dimension((int) camera.get(Videoio.CV_CAP_PROP_FRAME_WIDTH),
+				(int) camera.get(Videoio.CV_CAP_PROP_FRAME_HEIGHT));
 	}
 
 	public void launchCameraSettings() {
-		camera.set(Highgui.CV_CAP_PROP_SETTINGS, 1);
+		camera.set(Videoio.CV_CAP_PROP_SETTINGS, 1);
 	}
 
 	@Override

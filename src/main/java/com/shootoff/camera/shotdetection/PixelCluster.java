@@ -18,20 +18,19 @@
 
 package com.shootoff.camera.shotdetection;
 
+import com.shootoff.camera.shot.ShotColor;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-
-import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
-import org.opencv.imgproc.Imgproc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.shootoff.camera.shot.ShotColor;
 
 public class PixelCluster extends HashSet<Pixel> {
 	private static final Logger logger = LoggerFactory.getLogger(PixelCluster.class);
@@ -167,7 +166,7 @@ public class PixelCluster extends HashSet<Pixel> {
 			String filename = String.format("shot-colors-%d-%d.png", (int) centerPixelX, (int) centerPixelY);
 			final File file = new File(filename);
 			filename = file.toString();
-			Highgui.imwrite(filename, testMat);
+			Imgcodecs.imwrite(filename, testMat);
 		}
 
 		return colorDistance / pixelCount;
