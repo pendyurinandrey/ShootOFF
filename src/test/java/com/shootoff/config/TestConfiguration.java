@@ -1,14 +1,14 @@
 package com.shootoff.config;
 
-import static org.junit.Assert.*;
+import com.shootoff.util.loaders.OpenCVLoader;
+import javafx.scene.paint.Color;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import javafx.scene.paint.Color;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class TestConfiguration {
 	Configuration defaultConfig;
@@ -18,7 +18,7 @@ public class TestConfiguration {
 		// This is required because testWriteConfigFile loads a 
 		// configuration file after writing it, which causes
 		// cameras to be enumerated then opened with OpenCV
-		nu.pattern.OpenCV.loadShared();
+		OpenCVLoader.INSTANCE.loadSharedLibs();
 
 		System.setProperty("shootoff.home", System.getProperty("user.dir"));
 		String[] emptyArgs = new String[0];

@@ -18,51 +18,15 @@
 
 package com.shootoff.gui.controller;
 
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-
-import org.openimaj.util.parallel.GlobalExecutorPool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.shootoff.Closeable;
-import com.shootoff.Main;
-import com.shootoff.camera.CameraErrorView;
-import com.shootoff.camera.CameraFactory;
-import com.shootoff.camera.CameraManager;
-import com.shootoff.camera.CameraView;
-import com.shootoff.camera.CamerasSupervisor;
+import com.shootoff.JFXApplication;
+import com.shootoff.camera.*;
 import com.shootoff.camera.cameratypes.Camera;
 import com.shootoff.camera.shot.DisplayShot;
 import com.shootoff.config.Configuration;
-import com.shootoff.gui.CalibrationManager;
-import com.shootoff.gui.CameraConfigListener;
-import com.shootoff.gui.CanvasManager;
-import com.shootoff.gui.ExerciseListener;
-import com.shootoff.gui.Resetter;
-import com.shootoff.gui.ShotEntry;
-import com.shootoff.gui.pane.ExerciseSlide;
-import com.shootoff.gui.pane.FileSlide;
-import com.shootoff.gui.pane.ProjectorSlide;
-import com.shootoff.gui.pane.ShotSectorPane;
-import com.shootoff.gui.pane.TargetSlide;
-import com.shootoff.plugins.ExerciseMetadata;
-import com.shootoff.plugins.ProjectorTrainingExerciseBase;
-import com.shootoff.plugins.TrainingExercise;
-import com.shootoff.plugins.TrainingExerciseBase;
-import com.shootoff.plugins.TrainingExerciseView;
+import com.shootoff.gui.*;
+import com.shootoff.gui.pane.*;
+import com.shootoff.plugins.*;
 import com.shootoff.plugins.engine.Plugin;
 import com.shootoff.plugins.engine.PluginEngine;
 import com.shootoff.targets.CameraViews;
@@ -70,7 +34,6 @@ import com.shootoff.targets.Target;
 import com.shootoff.targets.TargetRegion;
 import com.shootoff.util.SystemInfo;
 import com.shootoff.util.TimerPool;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -83,18 +46,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ContextMenu;
+import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -105,6 +60,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.openimaj.util.parallel.GlobalExecutorPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ShootOFFController implements CameraConfigListener, CameraErrorView, CameraViews, Closeable, Resetter,
 		TrainingExerciseView, ExerciseListener {
@@ -366,7 +333,7 @@ public class ShootOFFController implements CameraConfigListener, CameraErrorView
 			}
 		}
 
-		if (!config.inDebugMode()) Main.forceClose(0);
+		if (!config.inDebugMode()) JFXApplication.forceClose(0);
 	}
 
 	@Override
@@ -461,7 +428,7 @@ public class ShootOFFController implements CameraConfigListener, CameraErrorView
 		// No configured cameras, attempt to use the system default
 		final Optional<Camera> defaultCamera = CameraFactory.getDefault();
 		if (!defaultCamera.isPresent()) {
-			Main.closeNoCamera();
+			JFXApplication.closeNoCamera();
 		}
 
 		if (!addCameraTab("Default", defaultCamera.get())) {
@@ -560,7 +527,7 @@ public class ShootOFFController implements CameraConfigListener, CameraErrorView
 				if (!addCameraTab("Default", defaultCam.get())) showCameraLockError(defaultCam.get(), true);
 			} else {
 				logger.error("Default camera was not fetched after clearing camera settings!");
-				Main.closeNoCamera();
+				JFXApplication.closeNoCamera();
 			}
 		} else {
 			if (camerasSupervisor.getCameraManagers().size() == config.getWebcams().size()) return;
@@ -876,7 +843,7 @@ public class ShootOFFController implements CameraConfigListener, CameraErrorView
 
 			if (allCamerasFailed) {
 				cameraAlert.showAndWait();
-				Main.forceClose(-1);
+				JFXApplication.forceClose(-1);
 			} else {
 				cameraAlert.show();
 			}

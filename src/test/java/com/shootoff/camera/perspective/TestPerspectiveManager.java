@@ -6,6 +6,7 @@ import com.shootoff.camera.TestAutoCalibration;
 import com.shootoff.camera.autocalibration.AutoCalibrationManager;
 import com.shootoff.camera.cameratypes.Camera;
 import com.shootoff.config.ConfigurationException;
+import com.shootoff.util.loaders.OpenCVLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Dimension2D;
 import org.junit.Before;
@@ -29,8 +30,7 @@ public class TestPerspectiveManager {
 
 	@Before
 	public void setUp() throws ConfigurationException {
-		nu.pattern.OpenCV.loadShared();
-
+		OpenCVLoader.INSTANCE.loadSharedLibs();
 		acm = new AutoCalibrationManager(new MockCameraManager(), new MockCamera(), false);
 	}
 
