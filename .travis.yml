@@ -4,5 +4,5 @@ language: java
 sudo: required
 before_install:
   - chmod +x gradlew
-script:
-  - ./gradlew build --scan -s
+install:
+  - ./gradlew check
