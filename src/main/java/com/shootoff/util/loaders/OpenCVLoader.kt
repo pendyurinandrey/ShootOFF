@@ -7,7 +7,7 @@ object OpenCVLoader {
 
     private val logger = LoggerFactory.getLogger(OpenCVLoader::class.java)
 
-    internal const val openCVNativeLibraryName = "opencv_java349"
+    internal const val openCVNativeLibraryName = "opencv_java420"
     private var isInitialized = false
 
     fun loadSharedLibs() {
