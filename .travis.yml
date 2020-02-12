@@ -2,7 +2,7 @@ os: osx
 osx_image: xcode11.3
 language: java
 sudo: required
-before_script:
+before_install:
   - chmod +x gradlew
 script:
   - ./gradlew build --scan -s
