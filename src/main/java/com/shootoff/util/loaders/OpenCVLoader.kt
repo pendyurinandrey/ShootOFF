@@ -18,8 +18,8 @@ object OpenCVLoader {
                 logger.info("Loaded existing OpenCV library %s from 'java.library.path'".format(openCVNativeLibraryName))
             } catch (ex: UnsatisfiedLinkError) {
                 logger.info(
-                    ("Unable to load OpenCV native lib in 'java.library.path'. " +
-                            "Loading failed with '%s'. Trying to fallback...").format(ex.message)
+                        ("Unable to load OpenCV native lib in 'java.library.path'. " +
+                                "Loading failed with '%s'. Trying to fallback...").format(ex.message)
                 )
                 val loader = resolveLoader()
                 loader.load()
@@ -32,6 +32,8 @@ object OpenCVLoader {
     private fun resolveLoader(): AbstractOpenCVLoader {
         if (SystemUtils.IS_OS_WINDOWS) {
             return WindowsOpenCVLoader()
+        } else if (SystemUtils.IS_OS_MAC_OSX) {
+            return MacOsCVLoader()
         } else {
             throw UnsupportedPlatformException("Current OS is not supported")
         }
@@ -50,14 +52,27 @@ private class WindowsOpenCVLoader : AbstractOpenCVLoader() {
 
     override fun load() {
         val libPath = "/%s/%s/%s/%s.%s".format(
-            nativeLibsDirName,
-            nativeLibsWindowsDirName,
-            NativeUtils.Arch.getCurrentArch().archName,
-            OpenCVLoader.openCVNativeLibraryName,
-            windowsNativeLibsExtension
+                nativeLibsDirName,
+                nativeLibsWindowsDirName,
+                NativeUtils.Arch.getCurrentArch().archName,
+                OpenCVLoader.openCVNativeLibraryName,
+                windowsNativeLibsExtension
         )
 
         NativeUtils.loadLibraryFromJar(libPath)
     }
 
 }
+
+private class MacOsCVLoader : AbstractOpenCVLoader() {
+    override fun load() {
+        val libPath = "/%s/osx/%s".format(
+                nativeLibsDirName,
+                "libopencv_java420.dylib"
+
+        )
+        NativeUtils.loadLibraryFromJar(libPath)
+    }
+
+}
+
