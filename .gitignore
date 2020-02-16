@@ -86,3 +86,4 @@ fabric.properties
 # Ignore ShootOFF Folders
 sessions/
 log/
+shootoff.properties
