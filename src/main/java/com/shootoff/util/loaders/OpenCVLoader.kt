@@ -1,3 +1,21 @@
+/*
+ * ShootOFF - Software for Laser Dry Fire Training
+ * Copyright (C) 2020 pendyurinandrey
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.shootoff.util.loaders
 
 import org.apache.commons.lang.SystemUtils
@@ -65,11 +83,14 @@ private class WindowsOpenCVLoader : AbstractOpenCVLoader() {
 }
 
 private class MacOsCVLoader : AbstractOpenCVLoader() {
-    override fun load() {
-        val libPath = "/%s/osx/%s".format(
-                nativeLibsDirName,
-                "libopencv_java420.dylib"
+    private val nativeLibsOsxDirName = "osx"
+    private val openCVNativeLibName = "libopencv_java420.dylib"
 
+    override fun load() {
+        val libPath = "/%s/%s/%s".format(
+                nativeLibsDirName,
+                nativeLibsOsxDirName,
+                openCVNativeLibName
         )
         NativeUtils.loadLibraryFromJar(libPath)
     }
