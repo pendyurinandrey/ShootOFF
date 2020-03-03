@@ -31,7 +31,6 @@ import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.shootoff.camera.CameraFactory;
 import com.shootoff.camera.CameraManager;
 import com.shootoff.camera.CameraView;
 import com.shootoff.camera.Frame;
@@ -53,11 +52,11 @@ public class OptiTrackCamera implements Camera {
 	private static final int MAXIMUM_EXPOSURE = 480;
 
 	public OptiTrackCamera() {
-		if (!initialized) init();
+		if (!initialized) tryInit();
 	}
 
-	public static void init() {
-		if (initialized) return;
+	public static boolean tryInit() {
+		if (initialized) return true;
 
 		try {
 			final File lib = new File(System.mapLibraryName("OptiTrackCamera"));
@@ -69,8 +68,10 @@ public class OptiTrackCamera implements Camera {
 		}
 
 		if (initialized && cameraAvailableNative()) {
-			CameraFactory.registerCamera(new OptiTrackCamera());
+			return true;
 		}
+
+		return false;
 	}
 
 	@Override

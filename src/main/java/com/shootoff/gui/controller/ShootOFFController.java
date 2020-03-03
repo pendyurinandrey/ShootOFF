@@ -426,27 +426,27 @@ public class ShootOFFController implements CameraConfigListener, CameraErrorView
 		}
 
 		// No configured cameras, attempt to use the system default
-		final Optional<Camera> defaultCamera = CameraFactory.getDefault();
-		if (!defaultCamera.isPresent()) {
+		final Camera defaultCamera = CameraFactory.INSTANCE.getDefaultCamera();
+		if (defaultCamera == null) {
 			JFXApplication.closeNoCamera();
 		}
 
-		if (!addCameraTab("Default", defaultCamera.get())) {
+		if (!addCameraTab("Default", defaultCamera)) {
 			// Failed to open the default camera. This sometimes happens
 			// on Windows when video devices get registered and set as
 			// the default camera even though the physical device is not
 			// actually present. This seems to happen sometimes with TV
 			// tuners and buggy camera drivers. As a workaround, try to
 			// fall back to using a different camera as the default.
-			final List<Camera> allCameras = CameraFactory.getWebcams();
+			final List<Camera> allCameras = CameraFactory.INSTANCE.getCameras();
 
 			if (allCameras.size() <= 1) {
-				showCameraLockError(defaultCamera.get(), true);
+				showCameraLockError(defaultCamera, true);
 			} else {
 				logger.warn("System default camera is in use, attempting to fall back to a different camera.");
 
 				for (final Camera c : allCameras) {
-					if (!c.equals(defaultCamera.get())) {
+					if (!c.equals(defaultCamera)) {
 						if (!addCameraTab("Default", c)) {
 							showCameraLockError(c, true);
 						}
@@ -491,13 +491,13 @@ public class ShootOFFController implements CameraConfigListener, CameraErrorView
 	}
 
 	private void addConfiguredCameras() {
-		Optional<Camera> defaultCam = Optional.empty();
-		if (config.getWebcams().isEmpty()) defaultCam = CameraFactory.getDefault();
+		Camera defaultCam = null;
+		if (config.getWebcams().isEmpty()) defaultCam = CameraFactory.INSTANCE.getDefaultCamera();
 
 		for (final Iterator<Entry<Tab, CameraManager>> it = cameraManagerTabs.entrySet().iterator(); it.hasNext();) {
 			final Entry<Tab, CameraManager> next = it.next();
 			if (config.getWebcams().isEmpty()) {
-				if (!defaultCam.isPresent() || next.getValue().getCamera() != defaultCam.get()) {
+				if (defaultCam == null || next.getValue().getCamera() != defaultCam) {
 					cameraTabPane.getTabs().remove(next.getKey());
 					camerasSupervisor.clearManager(next.getValue());
 					it.remove();
@@ -523,8 +523,8 @@ public class ShootOFFController implements CameraConfigListener, CameraErrorView
 		if (config.getWebcams().isEmpty()) {
 			if (camerasSupervisor.getCameraManagers().size() > 0) return;
 
-			if (defaultCam.isPresent()) {
-				if (!addCameraTab("Default", defaultCam.get())) showCameraLockError(defaultCam.get(), true);
+			if (defaultCam != null) {
+				if (!addCameraTab("Default", defaultCam)) showCameraLockError(defaultCam, true);
 			} else {
 				logger.error("Default camera was not fetched after clearing camera settings!");
 				JFXApplication.closeNoCamera();

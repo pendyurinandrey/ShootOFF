@@ -107,7 +107,7 @@ CameraRenamedListener {
 
 	public void setConfig(Stage parent, Configuration config, CalibrationConfigurator calibrationConfigurator,
 			CameraConfigListener cameraConfigListener) {
-		CheckableImageListCell.createImageCache(CameraFactory.getWebcams(), this);
+		CheckableImageListCell.createImageCache(CameraFactory.INSTANCE.getCameras(), this);
 
 		this.parent = parent;
 		this.config = config;
@@ -121,7 +121,7 @@ CameraRenamedListener {
 		webcamListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
 			@Override
 			public ListCell<String> call(ListView<String> list) {
-				return new CheckableImageListCell(CameraFactory.getWebcams(), configuredNames, configuredCameras, 
+				return new CheckableImageListCell(CameraFactory.INSTANCE.getCameras(), configuredNames, configuredCameras,
 						PreferencesController.this, PreferencesController.this, 
 						Optional.of(config.getRecordingCameras()));
 			}
@@ -149,7 +149,7 @@ CameraRenamedListener {
 			CheckableImageListCell.getCameraCheckBoxes().get(c).setSelected(true);
 		}
 
-		for (final Camera c : CameraFactory.getWebcams()) {
+		for (final Camera c : CameraFactory.INSTANCE.getCameras()) {
 			if (!configuredCameras.contains(c)) cameras.add(c.getName());
 		}
 

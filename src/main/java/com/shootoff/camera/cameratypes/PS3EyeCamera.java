@@ -50,7 +50,6 @@ import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.shootoff.camera.CameraFactory;
 import com.shootoff.camera.CameraManager;
 import com.shootoff.camera.CameraView;
 import com.shootoff.camera.Frame;
@@ -75,6 +74,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+//TODO: Check that support of this camera can be removed
 public class PS3EyeCamera extends CalculatedFPSCamera {
 	private static final Logger logger = LoggerFactory.getLogger(PS3EyeCamera.class);
 
@@ -158,7 +158,7 @@ public class PS3EyeCamera extends CalculatedFPSCamera {
 						+ "shutdown ShootOFF and unplug and re-plug in the PS3Eye to the usb port");
 			}
 
-			CameraFactory.registerCamera(new PS3EyeCamera());
+			//CameraFactory.registerCamera(new PS3EyeCamera());
 			logger.trace("PS3Eye adjusted and registered");
 		}
 

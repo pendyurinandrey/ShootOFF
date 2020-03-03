@@ -33,15 +33,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.shootoff.camera.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.shootoff.camera.CameraErrorView;
-import com.shootoff.camera.CameraFactory;
-import com.shootoff.camera.CameraManager;
-import com.shootoff.camera.CameraView;
-import com.shootoff.camera.CamerasSupervisor;
-import com.shootoff.camera.Shot;
 import com.shootoff.camera.cameratypes.Camera;
 import com.shootoff.config.Configuration;
 import com.shootoff.config.ConfigurationException;
@@ -185,29 +180,27 @@ public class HeadlessController implements AutocalibrationListener, CameraErrorV
 		camerasSupervisor = new CamerasSupervisor(config);
 
 		final Map<String, Camera> configuredCameras = config.getWebcams();
-		final Optional<Camera> camera;
+		final Camera camera;
 
 		if (configuredCameras.isEmpty()) {
-			camera = CameraFactory.getDefault();
+			camera = CameraFactory.INSTANCE.getDefaultCamera();
 		} else {
-			camera = Optional.of(configuredCameras.values().iterator().next());
+			camera = configuredCameras.values().iterator().next();
 		}
 
-		if (!camera.isPresent()) {
+		if (camera == null) {
 			logger.error("There are no cameras attached to the computer.");
 			return;
 		}
 
-		final Camera c = camera.get();
-
-		if (c.isLocked() && !c.isOpen()) {
+		if (camera.isLocked() && !camera.isOpen()) {
 			logger.error("Default camera is locked, cannot proceed");
 			return;
 		}
 
 		initializePluginEngine();
 
-		final Optional<CameraManager> manager = camerasSupervisor.addCameraManager(c, this, canvasManager);
+		final Optional<CameraManager> manager = camerasSupervisor.addCameraManager(camera, this, canvasManager);
 		if (manager.isPresent()) {
 			final CameraManager cameraManager = manager.get();
 
@@ -220,7 +213,7 @@ public class HeadlessController implements AutocalibrationListener, CameraErrorV
 
 			calibrationManager.enableCalibration();
 		} else {
-			logger.error("Failed to start camera {}", c.getName());
+			logger.error("Failed to start camera {}", camera.getName());
 		}
 	}
 

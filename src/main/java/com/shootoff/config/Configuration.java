@@ -277,7 +277,7 @@ public class Configuration {
 				}
 			}
 
-			for (final Camera webcam : CameraFactory.getWebcams()) {
+			for (final Camera webcam : CameraFactory.INSTANCE.getCameras()) {
 				final int cameraIndex = webcamInternalNames.indexOf(webcam.getName());
 				if (cameraIndex >= 0) webcams.put(webcamNames.get(cameraIndex), webcam);
 

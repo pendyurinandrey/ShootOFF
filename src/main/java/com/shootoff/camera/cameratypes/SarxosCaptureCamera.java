@@ -19,7 +19,6 @@
 package com.shootoff.camera.cameratypes;
 
 import com.github.sarxos.webcam.Webcam;
-import com.shootoff.camera.CameraFactory;
 import com.shootoff.camera.CameraManager;
 import com.shootoff.camera.CameraView;
 import com.shootoff.camera.Frame;
@@ -47,13 +46,10 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 	private final VideoCapture camera;
 
 	private final AtomicBoolean closing = new AtomicBoolean(false);
-
-	// For testing
-	protected SarxosCaptureCamera() {
-		camera = null;
-	}
+	private final String cameraName;
 
 	public SarxosCaptureCamera(final String cameraName) {
+		this.cameraName = cameraName;
 		final List<Webcam> webcams = Webcam.getWebcams();
 		int cameraIndex = -1;
 
@@ -76,7 +72,7 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 
 		camera = new VideoCapture();
 		this.cameraIndex = cameraIndex;
-
+		this.cameraName = cameraName;
 	}
 
 	@Override
@@ -108,8 +104,9 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 
 	@Override
 	public synchronized boolean open() {
-		if (logger.isTraceEnabled())
+		if (logger.isTraceEnabled()) {
 			logger.trace("{} - open request isOpen {} closing {}", getName(), isOpen(), closing);
+		}
 
 		if (isOpen() && !closing.get()) return true;
 
@@ -121,8 +118,6 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 			// Set the max FPS to 60. If we don't set this it defaults
 			// to 30, which unnecessarily hampers higher end cameras
 			camera.set(5, 60);
-
-			CameraFactory.openCamerasAdd(this);
 		}
 
 		return open;
@@ -143,7 +138,6 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 			resetExposure();
 			camera.release();
 
-			CameraFactory.openCamerasRemove(this);
 			if (cameraEventListener.isPresent()) cameraEventListener.get().cameraClosed();
 			
 		} else if (isOpen() && closing.get()) {
@@ -157,7 +151,7 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 
 	@Override
 	public String getName() {
-		return Webcam.getWebcams().get(cameraIndex).getName();
+		return cameraName;
 	}
 
 	@Override

@@ -19,7 +19,6 @@
 package com.shootoff;
 
 import com.shootoff.camera.CameraFactory;
-import com.shootoff.camera.cameratypes.OptiTrackCamera;
 import com.shootoff.camera.cameratypes.PS3EyeCamera;
 import com.shootoff.config.Configuration;
 import com.shootoff.config.ConfigurationException;
@@ -606,11 +605,10 @@ public class JFXApplication extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		OptiTrackCamera.init();
 
 		this.primaryStage = primaryStage;
 
-		if (SystemInfo.isMacOsX() && CameraFactory.getWebcams().isEmpty()) {
+		if (SystemInfo.isMacOsX() && CameraFactory.INSTANCE.getCameras().isEmpty()) {
 			closeNoCamera();
 		} else if (SystemInfo.isWindows()) {
 			PS3EyeCamera.init();
@@ -677,34 +675,6 @@ public class JFXApplication extends Application {
 
 	@SuppressFBWarnings("DMI_HARDCODED_ABSOLUTE_FILENAME")
 	public static void main(String[] args) {
-		// Check the comment at the top of the Camera class
-		// for more information about this hack
-		if (SystemInfo.isMacOsX()) {
-			OpenCVLoader.INSTANCE.loadSharedLibs();
-			CameraFactory.getDefault();
-		} else if (SystemInfo.isLinux()) {
-			// Need to ensure v4l1compat is preloaded if it exists otherwise
-			// OpenCV won't work
-			final File v4lCompat = new File("/usr/lib/libv4l/v4l1compat.so");
-
-			if (v4lCompat.exists()) {
-				final String preload = System.getenv("LD_PRELOAD");
-
-				if (preload == null || !preload.contains(v4lCompat.getPath())) {
-					closeNoV4lCompat(v4lCompat);
-				}
-			} else {
-				// The over-exuberance here is because a lot of people miss this
-				// message
-				logger.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
-						+ "This system is running Linux, and likely therefore also v4l. "
-						+ "If ShootOFF fails to run or has camera problems, it's likely because you need "
-						+ "to preload v4l1compat using: "
-						+ "export LD_PRELOAD=path_to_v4l1compat; java -jar ShootOFF.jar\n"
-						+ "!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				shouldShowV4lWarning = true;
-			}
-		}
 
 		OpenCVLoader.INSTANCE.loadSharedLibs();
 
