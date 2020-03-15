@@ -163,11 +163,6 @@ test {
     }
 }
 
-task copyEyeCam(type:Copy) {
-    from 'eyeCam32.dll' into 'build/dist'
-    from 'eyeCam64.dll' into 'build/dist'
-}
-
 task copyConfig(type:Copy) {
     from 'shootoff.properties' into 'build/dist'
 }
@@ -216,7 +211,6 @@ task fxJar(dependsOn: build) {
     dependsOn('copyCourses')
     dependsOn('copySounds')
     dependsOn('copyLibs')
-    dependsOn('copyEyeCam')
 
     description 'Create a runnable jar for ShootOFF'
     group 'Package'
@@ -274,8 +268,6 @@ task zipRelease(type: Zip) {
         include 'libs/**/*.jar'
         include 'shootoff.properties'
         include 'ShootOFF.jar'
-        include 'eyeCam32.dll'
-        include 'eyeCam64.dll'
     }
 
     archiveName = releaseZip

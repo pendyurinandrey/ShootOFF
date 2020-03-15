@@ -19,7 +19,6 @@
 package com.shootoff;
 
 import com.shootoff.camera.CameraFactory;
-import com.shootoff.camera.cameratypes.PS3EyeCamera;
 import com.shootoff.config.Configuration;
 import com.shootoff.config.ConfigurationException;
 import com.shootoff.gui.controller.ShootOFFController;
@@ -610,8 +609,6 @@ public class JFXApplication extends Application {
 
 		if (SystemInfo.isMacOsX() && CameraFactory.INSTANCE.getCameras().isEmpty()) {
 			closeNoCamera();
-		} else if (SystemInfo.isWindows()) {
-			PS3EyeCamera.init();
 		}
 
 		if (System.getProperty("javawebstart.version", null) != null) {

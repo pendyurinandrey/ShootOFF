@@ -23,7 +23,6 @@ import com.shootoff.camera.autocalibration.AutoCalibrationManager;
 import com.shootoff.camera.cameratypes.Camera;
 import com.shootoff.camera.cameratypes.Camera.CameraState;
 import com.shootoff.camera.cameratypes.CameraEventListener;
-import com.shootoff.camera.cameratypes.PS3EyeCamera;
 import com.shootoff.camera.cameratypes.SarxosCaptureCamera;
 import com.shootoff.camera.processors.DeduplicationProcessor;
 import com.shootoff.camera.recorders.RollingRecorder;
@@ -776,8 +775,6 @@ public class CameraManager implements ObservableCloseable, CameraEventListener, 
 	public void launchCameraSettings() {
 		if (camera instanceof SarxosCaptureCamera) {
 			((SarxosCaptureCamera) camera).launchCameraSettings();
-		} else if (camera instanceof PS3EyeCamera) {
-			((PS3EyeCamera) camera).launchCameraSettings();
 		}
 	}
 
