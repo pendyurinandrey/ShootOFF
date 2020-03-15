@@ -18,8 +18,38 @@
 
 package com.shootoff.camera;
 
-import java.awt.Dimension;
-import java.awt.Point;
+import com.shootoff.ObservableCloseable;
+import com.shootoff.camera.autocalibration.AutoCalibrationManager;
+import com.shootoff.camera.cameratypes.Camera;
+import com.shootoff.camera.cameratypes.Camera.CameraState;
+import com.shootoff.camera.cameratypes.CameraEventListener;
+import com.shootoff.camera.cameratypes.SarxosCaptureCamera;
+import com.shootoff.camera.processors.DeduplicationProcessor;
+import com.shootoff.camera.recorders.RollingRecorder;
+import com.shootoff.camera.recorders.ShotRecorder;
+import com.shootoff.camera.shot.ShotColor;
+import com.shootoff.camera.shotdetection.*;
+import com.shootoff.config.Configuration;
+import com.shootoff.util.TimerPool;
+import com.xuggle.mediatool.IMediaWriter;
+import com.xuggle.mediatool.ToolFactory;
+import com.xuggle.xuggler.ICodec;
+import com.xuggle.xuggler.IPixelFormat;
+import com.xuggle.xuggler.IVideoPicture;
+import com.xuggle.xuggler.video.ConverterFactory;
+import com.xuggle.xuggler.video.IConverter;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Bounds;
+import javafx.geometry.Dimension2D;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import org.opencv.core.CvException;
+import org.opencv.core.Mat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -30,44 +60,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.opencv.core.CvException;
-import org.opencv.core.Mat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.shootoff.ObservableCloseable;
-import com.shootoff.camera.autocalibration.AutoCalibrationManager;
-import com.shootoff.camera.cameratypes.Camera;
-import com.shootoff.camera.cameratypes.Camera.CameraState;
-import com.shootoff.camera.cameratypes.CameraEventListener;
-import com.shootoff.camera.cameratypes.PS3EyeCamera;
-import com.shootoff.camera.cameratypes.SarxosCaptureCamera;
-import com.shootoff.camera.processors.DeduplicationProcessor;
-import com.shootoff.camera.recorders.RollingRecorder;
-import com.shootoff.camera.recorders.ShotRecorder;
-import com.shootoff.camera.shot.ShotColor;
-import com.shootoff.camera.shotdetection.CameraStateListener;
-import com.shootoff.camera.shotdetection.FrameProcessingShotDetector;
-import com.shootoff.camera.shotdetection.JavaShotDetector;
-import com.shootoff.camera.shotdetection.ShotDetector;
-import com.shootoff.camera.shotdetection.ShotYieldingShotDetector;
-import com.shootoff.config.Configuration;
-import com.shootoff.util.TimerPool;
-import com.xuggle.mediatool.IMediaWriter;
-import com.xuggle.mediatool.ToolFactory;
-import com.xuggle.xuggler.ICodec;
-import com.xuggle.xuggler.IPixelFormat;
-import com.xuggle.xuggler.IVideoPicture;
-import com.xuggle.xuggler.video.ConverterFactory;
-import com.xuggle.xuggler.video.IConverter;
-
-import com.shootoff.util.SwingFXUtils;
-import javafx.geometry.Bounds;
-import javafx.geometry.Dimension2D;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 /**
  * This class is responsible for fetching frames from its assigned camera and
@@ -783,8 +775,6 @@ public class CameraManager implements ObservableCloseable, CameraEventListener, 
 	public void launchCameraSettings() {
 		if (camera instanceof SarxosCaptureCamera) {
 			((SarxosCaptureCamera) camera).launchCameraSettings();
-		} else if (camera instanceof PS3EyeCamera) {
-			((PS3EyeCamera) camera).launchCameraSettings();
 		}
 	}
 

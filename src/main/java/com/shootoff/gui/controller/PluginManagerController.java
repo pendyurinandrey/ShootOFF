@@ -18,57 +18,42 @@
 
 package com.shootoff.gui.controller;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import com.google.common.io.Files;
-import com.shootoff.Main;
+import com.shootoff.JFXApplication;
 import com.shootoff.plugins.ExerciseMetadata;
 import com.shootoff.plugins.engine.Plugin;
 import com.shootoff.plugins.engine.PluginEngine;
 import com.shootoff.util.VersionChecker;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public class PluginManagerController {
 	private static final Logger logger = LoggerFactory.getLogger(PluginManagerController.class);
@@ -82,7 +67,7 @@ public class PluginManagerController {
 	private PluginEngine pluginEngine;
 
 	public void init(PluginEngine pluginEngine, Stage pluginManagerStage) {
-		final String pluginMetadataAddress = Main.SHOOTOFF_DOMAIN + PLUGIN_METADATA_NAME;
+		final String pluginMetadataAddress = JFXApplication.SHOOTOFF_DOMAIN + PLUGIN_METADATA_NAME;
 
 		this.pluginEngine = pluginEngine;
 
@@ -369,7 +354,7 @@ public class PluginManagerController {
 	}
 
 	private boolean isPluginCompatible(final String minShootOFFVersion, final String maxShootOFFVersion) {
-		return isPluginCompatible(Main.getVersion(), minShootOFFVersion, maxShootOFFVersion);
+		return isPluginCompatible(JFXApplication.getVersion(), minShootOFFVersion, maxShootOFFVersion);
 	}
 
 	// For testing

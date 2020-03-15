@@ -18,26 +18,24 @@
 
 package com.shootoff.camera.cameratypes;
 
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
-import org.opencv.highgui.VideoCapture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.sarxos.webcam.Webcam;
-import com.shootoff.camera.CameraFactory;
 import com.shootoff.camera.CameraManager;
 import com.shootoff.camera.CameraView;
 import com.shootoff.camera.Frame;
 import com.shootoff.camera.shotdetection.JavaShotDetector;
 import com.shootoff.camera.shotdetection.NativeShotDetector;
 import com.shootoff.camera.shotdetection.ShotDetector;
+import org.opencv.core.Mat;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SarxosCaptureCamera extends CalculatedFPSCamera {
 	private static final Logger logger = LoggerFactory.getLogger(SarxosCaptureCamera.class);
@@ -48,13 +46,10 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 	private final VideoCapture camera;
 
 	private final AtomicBoolean closing = new AtomicBoolean(false);
-
-	// For testing
-	protected SarxosCaptureCamera() {
-		camera = null;
-	}
+	private final String cameraName;
 
 	public SarxosCaptureCamera(final String cameraName) {
+		this.cameraName = cameraName;
 		final List<Webcam> webcams = Webcam.getWebcams();
 		int cameraIndex = -1;
 
@@ -77,7 +72,7 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 
 		camera = new VideoCapture();
 		this.cameraIndex = cameraIndex;
-
+		this.cameraName = cameraName;
 	}
 
 	@Override
@@ -109,8 +104,9 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 
 	@Override
 	public synchronized boolean open() {
-		if (logger.isTraceEnabled())
+		if (logger.isTraceEnabled()) {
 			logger.trace("{} - open request isOpen {} closing {}", getName(), isOpen(), closing);
+		}
 
 		if (isOpen() && !closing.get()) return true;
 
@@ -122,8 +118,6 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 			// Set the max FPS to 60. If we don't set this it defaults
 			// to 30, which unnecessarily hampers higher end cameras
 			camera.set(5, 60);
-
-			CameraFactory.openCamerasAdd(this);
 		}
 
 		return open;
@@ -144,7 +138,6 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 			resetExposure();
 			camera.release();
 
-			CameraFactory.openCamerasRemove(this);
 			if (cameraEventListener.isPresent()) cameraEventListener.get().cameraClosed();
 			
 		} else if (isOpen() && closing.get()) {
@@ -158,23 +151,23 @@ public class SarxosCaptureCamera extends CalculatedFPSCamera {
 
 	@Override
 	public String getName() {
-		return Webcam.getWebcams().get(cameraIndex).getName();
+		return cameraName;
 	}
 
 	@Override
 	public void setViewSize(final Dimension size) {
-		camera.set(Highgui.CV_CAP_PROP_FRAME_WIDTH, size.getWidth());
-		camera.set(Highgui.CV_CAP_PROP_FRAME_HEIGHT, size.getHeight());
+		camera.set(Videoio.CAP_PROP_FRAME_WIDTH, size.getWidth());
+		camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, size.getHeight());
 	}
 
 	@Override
 	public Dimension getViewSize() {
-		return new Dimension((int) camera.get(Highgui.CV_CAP_PROP_FRAME_WIDTH),
-				(int) camera.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT));
+		return new Dimension((int) camera.get(Videoio.CAP_PROP_FRAME_WIDTH),
+				(int) camera.get(Videoio.CAP_PROP_FRAME_HEIGHT));
 	}
 
 	public void launchCameraSettings() {
-		camera.set(Highgui.CV_CAP_PROP_SETTINGS, 1);
+		camera.set(Videoio.CAP_PROP_SETTINGS, 1);
 	}
 
 	@Override

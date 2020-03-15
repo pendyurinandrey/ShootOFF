@@ -18,29 +18,6 @@
 
 package com.shootoff.headless;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.bluetooth.BluetoothStateException;
-import javax.bluetooth.LocalDevice;
-import javax.bluetooth.ServiceRegistrationException;
-import javax.bluetooth.UUID;
-import javax.microedition.io.Connector;
-import javax.microedition.io.StreamConnection;
-import javax.microedition.io.StreamConnectionNotifier;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -49,9 +26,23 @@ import com.shootoff.headless.protocol.HeartbeatMessage;
 import com.shootoff.headless.protocol.Message;
 import com.shootoff.headless.protocol.MessageListener;
 import com.shootoff.util.TimerPool;
-import com.shootoff.util.SwingFXUtils;
-
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.bluetooth.BluetoothStateException;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.ServiceRegistrationException;
+import javax.bluetooth.UUID;
+import javax.microedition.io.Connector;
+import javax.microedition.io.StreamConnection;
+import javax.microedition.io.StreamConnectionNotifier;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class BluetoothServer implements HeadlessServer {
 	private static final Logger logger = LoggerFactory.getLogger(BluetoothServer.class);

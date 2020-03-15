@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,6 @@ import com.github.sarxos.webcam.ds.ipcam.IpCamAuth;
 import com.github.sarxos.webcam.ds.ipcam.IpCamDevice;
 import com.github.sarxos.webcam.ds.ipcam.IpCamDeviceRegistry;
 import com.github.sarxos.webcam.ds.ipcam.IpCamMode;
-import com.shootoff.camera.CameraFactory;
 import com.shootoff.camera.CameraManager;
 import com.shootoff.camera.CameraView;
 import com.shootoff.camera.Frame;
@@ -152,14 +152,12 @@ public class IpCamera extends CalculatedFPSCamera {
 
 		closing.set(true);
 
-		if (CameraFactory.isMac()) {
+		if (SystemUtils.IS_OS_MAC_OSX) { //TODO: Check that it's still necessary
 			new Thread(() -> {
 				ipcam.close();
 			}, "CloseMacOSXWebcam").start();
-			return;
 		} else {
 			ipcam.close();
-			return;
 		}
 	}
 

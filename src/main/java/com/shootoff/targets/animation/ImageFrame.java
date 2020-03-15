@@ -18,10 +18,10 @@
 
 package com.shootoff.targets.animation;
 
-import java.awt.image.BufferedImage;
-
-import com.shootoff.util.SwingFXUtils;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+
+import java.awt.image.BufferedImage;
 
 public class ImageFrame {
 	private final int delay;

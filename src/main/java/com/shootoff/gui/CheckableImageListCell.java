@@ -18,24 +18,11 @@
 
 package com.shootoff.gui;
 
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.shootoff.camera.CameraManager;
 import com.shootoff.camera.cameratypes.Camera;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import com.shootoff.util.SwingFXUtils;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.cell.TextFieldListCell;
@@ -44,6 +31,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.converter.DefaultStringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.*;
 
 public class CheckableImageListCell extends TextFieldListCell<String> {
 	private static final Logger logger = LoggerFactory.getLogger(CheckableImageListCell.class);

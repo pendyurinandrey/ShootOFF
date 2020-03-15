@@ -1,39 +1,36 @@
 package com.shootoff.camera.perspective;
 
-import static org.junit.Assert.*;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.imageio.ImageIO;
-
+import com.shootoff.camera.MockCamera;
+import com.shootoff.camera.MockCameraManager;
+import com.shootoff.camera.TestAutoCalibration;
+import com.shootoff.camera.autocalibration.AutoCalibrationManager;
+import com.shootoff.camera.cameratypes.Camera;
+import com.shootoff.config.ConfigurationException;
+import com.shootoff.util.loaders.OpenCVLoader;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Dimension2D;
 import org.junit.Before;
 import org.junit.Test;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.imgproc.Imgproc;
 
-import com.shootoff.camera.MockCamera;
-import com.shootoff.camera.MockCameraManager;
-import com.shootoff.camera.TestAutoCalibration;
-import com.shootoff.camera.autocalibration.AutoCalibrationManager;
-import com.shootoff.camera.cameratypes.Camera;
-import com.shootoff.camera.perspective.PerspectiveManager;
-import com.shootoff.config.ConfigurationException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Dimension2D;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestPerspectiveManager {
 	private AutoCalibrationManager acm;
 
 	@Before
 	public void setUp() throws ConfigurationException {
-		nu.pattern.OpenCV.loadShared();
-
+		OpenCVLoader.INSTANCE.loadSharedLibs();
 		acm = new AutoCalibrationManager(new MockCameraManager(), new MockCamera(), false);
 	}
 

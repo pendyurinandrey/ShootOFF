@@ -18,32 +18,12 @@
 
 package com.shootoff.gui.targets;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.shootoff.config.Configuration;
 import com.shootoff.gui.CanvasManager;
-import com.shootoff.targets.Hit;
-import com.shootoff.targets.ImageRegion;
-import com.shootoff.targets.RectangleRegion;
-import com.shootoff.targets.RegionType;
-import com.shootoff.targets.Target;
-import com.shootoff.targets.TargetRegion;
+import com.shootoff.targets.*;
 import com.shootoff.targets.animation.SpriteAnimation;
-
 import javafx.animation.Animation.Status;
-import com.shootoff.util.SwingFXUtils;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Bounds;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
@@ -55,6 +35,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.List;
+import java.util.*;
 
 /**
  * This is contains the code required to display, resize, and move targets. It

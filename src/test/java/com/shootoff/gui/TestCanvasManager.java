@@ -1,14 +1,5 @@
 package com.shootoff.gui;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
 import com.shootoff.camera.CameraManager;
 import com.shootoff.camera.CamerasSupervisor;
 import com.shootoff.camera.MockCamera;
@@ -22,11 +13,19 @@ import com.shootoff.gui.targets.TargetView;
 import com.shootoff.targets.Hit;
 import com.shootoff.targets.Target;
 import com.shootoff.targets.TargetRegion;
-
+import com.shootoff.util.loaders.OpenCVLoader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.shape.Shape;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.io.File;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class TestCanvasManager {
 	@Rule public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
@@ -41,7 +40,7 @@ public class TestCanvasManager {
 	public void setUp() throws ConfigurationException {
 		System.setProperty("shootoff.home", System.getProperty("user.dir"));
 
-		nu.pattern.OpenCV.loadShared();
+		OpenCVLoader.INSTANCE.loadSharedLibs();
 
 		config = new Configuration(new String[0]);
 		CamerasSupervisor cs = new CamerasSupervisor(config);

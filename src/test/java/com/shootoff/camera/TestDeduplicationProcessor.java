@@ -1,18 +1,19 @@
 package com.shootoff.camera;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.shootoff.camera.processors.DeduplicationProcessor;
 import com.shootoff.camera.shot.ShotColor;
 import com.shootoff.config.ConfigurationException;
+import com.shootoff.util.loaders.OpenCVLoader;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TestDeduplicationProcessor {
 
 	@Test
 	public void testReset() throws ConfigurationException {
-		nu.pattern.OpenCV.loadShared();
+		OpenCVLoader.INSTANCE.loadSharedLibs();
 
 		DeduplicationProcessor deduplicationProcessor = new DeduplicationProcessor(new MockCameraManager());
 

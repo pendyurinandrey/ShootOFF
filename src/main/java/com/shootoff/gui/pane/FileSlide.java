@@ -18,29 +18,26 @@
 
 package com.shootoff.gui.pane;
 
-import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.shootoff.Closeable;
 import com.shootoff.config.Configuration;
 import com.shootoff.gui.CalibrationConfigurator;
 import com.shootoff.gui.CameraConfigListener;
 import com.shootoff.gui.controller.PreferencesController;
 import com.shootoff.targets.CameraViews;
-
-import com.shootoff.util.SwingFXUtils;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class FileSlide extends Slide {
 	private static final Logger logger = LoggerFactory.getLogger(FileSlide.class);

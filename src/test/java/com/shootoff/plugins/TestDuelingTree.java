@@ -1,26 +1,6 @@
 package com.shootoff.plugins;
 
-import static org.junit.Assert.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javafx.scene.Group;
-import javafx.scene.Node;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.slf4j.LoggerFactory;
-
+import ch.qos.logback.classic.Logger;
 import com.shootoff.camera.CamerasSupervisor;
 import com.shootoff.camera.Shot;
 import com.shootoff.camera.shot.ShotColor;
@@ -36,8 +16,24 @@ import com.shootoff.targets.Target;
 import com.shootoff.targets.TargetRegion;
 import com.shootoff.targets.io.TargetIO;
 import com.shootoff.targets.io.TargetIO.TargetComponents;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
+import java.io.*;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestDuelingTree {
 	@Rule public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
@@ -92,9 +88,9 @@ public class TestDuelingTree {
 		// Set the wait to zero
 		Field delayConstant = dt.getClass().getDeclaredField("NEW_ROUND_DELAY");
 		delayConstant.setAccessible(true);
-		Field modifiersField = Field.class.getDeclaredField("modifiers");
-		modifiersField.setAccessible(true);
-		modifiersField.setInt(delayConstant, delayConstant.getModifiers() & ~Modifier.FINAL);
+		var lookup = MethodHandles.privateLookupIn(Field.class, MethodHandles.lookup());
+		VarHandle modifiersField = lookup.findVarHandle(Field.class, "modifiers", int.class);
+		modifiersField.set(delayConstant, delayConstant.getModifiers() & ~Modifier.FINAL);
 		delayConstant.setInt(dt, 0);
 	}
 

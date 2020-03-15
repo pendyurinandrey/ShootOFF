@@ -1,24 +1,22 @@
 package com.shootoff.camera;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
+import ch.qos.logback.classic.Logger;
+import com.shootoff.camera.shot.DisplayShot;
+import com.shootoff.config.Configuration;
+import com.shootoff.gui.MockCanvasManager;
+import com.shootoff.plugins.TrainingExerciseBase;
+import com.shootoff.util.loaders.OpenCVLoader;
 import javafx.geometry.Bounds;
-
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.rules.ErrorCollector;
 import org.slf4j.LoggerFactory;
 
-import com.shootoff.camera.shot.DisplayShot;
-import com.shootoff.config.Configuration;
-import com.shootoff.gui.MockCanvasManager;
-import com.shootoff.plugins.TrainingExerciseBase;
-
-import ch.qos.logback.classic.Logger;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -32,7 +30,7 @@ public class ShotDetectionTestor implements VideoFinishedListener {
 		Configuration.disableErrorReporting();
 		TrainingExerciseBase.silence(true);
 
-		nu.pattern.OpenCV.loadShared();
+		OpenCVLoader.INSTANCE.loadSharedLibs();
 
 		// Disable all loggers because our output has gotten verbose
 		// enough that Travis-CI kills us. Comment out the lines below
